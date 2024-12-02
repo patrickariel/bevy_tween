@@ -1,6 +1,6 @@
 use super::*;
 use bevy::{
-    ecs::{query::QueryEntityError, schedule::SystemConfigs},
+    ecs::schedule::SystemConfigs,
     utils::{HashMap, HashSet},
 };
 use std::any::type_name;
@@ -70,7 +70,7 @@ pub fn apply_component_tween_system<I>(
         Without<SkipTween>,
     >,
     mut q_component: Query<&mut I::Item>,
-    mut last_entity_error: Local<HashMap<Entity, QueryEntityError>>,
+    mut last_entity_error: Local<HashMap<Entity, String>>,
     mut last_search_error: Local<HashSet<Entity>>,
 ) where
     I: Interpolator + Send + Sync + 'static,
@@ -89,11 +89,11 @@ pub fn apply_component_tween_system<I>(
                             Err(e) => {
                                 if last_entity_error
                                     .get(target)
-                                    .map(|old_e| old_e != &e)
+                                    .map(|old_e| old_e != &e.to_string())
                                     .unwrap_or(true)
                                     && entity_error
                                         .get(target)
-                                        .map(|old_e| old_e != &e)
+                                        .map(|old_e| old_e != &e.to_string())
                                         .unwrap_or(true)
                                 {
                                     error!(
@@ -102,7 +102,7 @@ pub fn apply_component_tween_system<I>(
                                         type_name::<I::Item>()
                                     );
                                 }
-                                entity_error.insert(*target, e);
+                                entity_error.insert(*target, e.to_string());
                                 return;
                             }
                         };
@@ -154,11 +154,11 @@ pub fn apply_component_tween_system<I>(
                     Err(e) => {
                         if last_entity_error
                             .get(&target)
-                            .map(|old_e| old_e != &e)
+                            .map(|old_e| old_e != &e.to_string())
                             .unwrap_or(true)
                             && entity_error
                                 .get(&target)
-                                .map(|old_e| old_e != &e)
+                                .map(|old_e| old_e != &e.to_string())
                                 .unwrap_or(true)
                         {
                             error!(
@@ -167,7 +167,7 @@ pub fn apply_component_tween_system<I>(
                                 type_name::<I::Item>()
                             );
                         }
-                        entity_error.insert(target, e);
+                        entity_error.insert(target, e.to_string());
                         return;
                     }
                 };

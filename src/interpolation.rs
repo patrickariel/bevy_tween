@@ -771,8 +771,8 @@ pub enum EaseFunction {
 impl EaseFunction {
     /// Sample a value from this ease function.
     pub fn sample(&self, v: f32) -> f32 {
+        use self::EaseFunction::*;
         use ease_functions::*;
-        use EaseFunction::*;
         match self {
             Linear => linear(v),
             QuadraticIn => quadratic_in(v),

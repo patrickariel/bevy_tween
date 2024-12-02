@@ -126,7 +126,7 @@ fn entity_eq(world: &World, a: Entity, b: Entity) -> bool {
                 }
             }
         } else if !(a_component_reflected
-            .reflect_partial_eq(b_component_reflected)
+            .reflect_partial_eq(b_component_reflected.as_partial_reflect())
             .unwrap_or(false))
         {
             return false;
